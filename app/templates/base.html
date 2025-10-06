@@ -1,0 +1,49 @@
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{%- block title -%}{%- endblock -%}</title>
+  <script type="module" crossorigin="" src="/static/js/index.js"></script>
+  <link rel="stylesheet" crossorigin="" href="/static/css/index.css">
+
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/jquery-ui.min.css') }}"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-reboot.min.css') }}"/>
+  <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-grid.min.css') }}"/> -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-slider.min.css') }}"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}?date=23.10.2022w"/>
+
+  {%- if g.url_prefix -%}
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/')}}{{ g.url_prefix }}.css?date=13.11.2023">
+  {%- endif -%}
+<body>
+  <div id="app">
+    <div class="header">
+      {% include "header.html" %}
+    </div>
+    <main class="main">
+      <div class="container">
+        <center>
+        {%- block content -%}{%- endblock -%}
+      </center>
+      </div>
+    </main>
+    <div class="footer">
+      {% include "footer.html" %}
+    </div>
+</div>
+<script src="{{ url_for('static', filename='js/jquery-3.3.1.min.js')}}"></script>
+<!-- <script src="{{ url_for('static', filename='js/jquery-ui.min.js')}}"></script> -->
+<script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js')}}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap-slider.min.js')}}"></script>
+<script src="{{ url_for('static', filename='js/list.min.js')}}"></script>
+<script src="{{ url_for('static', filename='js/panzoom.min.js')}}"></script>
+<script src="{{ url_for('static', filename='js/jscolor.js')}}"></script>
+{%- if g.url_prefix -%}
+    <script src="{{ url_for('static', filename='js/')}}{{ g.url_prefix }}.js?date=18.09.2023"></script>
+{%- endif -%}
+</body>
+
+</html>

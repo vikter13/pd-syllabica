@@ -1,0 +1,546 @@
+html {
+    line-height: 1.15;
+    -webkit-text-size-adjust: 100%
+}
+
+body {
+    margin: 0
+}
+
+main {
+    display: block
+}
+
+h1 {
+    font-size: 2em;
+    margin: .67em 0
+}
+
+hr {
+    box-sizing: content-box;
+    height: 0;
+    overflow: visible
+}
+
+pre {
+    font-family: monospace, monospace;
+    font-size: 1em
+}
+
+a {
+    background-color: transparent
+}
+
+abbr[title] {
+    border-bottom: none;
+    text-decoration: underline;
+    -webkit-text-decoration: underline dotted;
+    text-decoration: underline dotted
+}
+
+b,
+strong {
+    font-weight: bolder
+}
+
+code,
+kbd,
+samp {
+    font-family: monospace, monospace;
+    font-size: 1em
+}
+
+small {
+    font-size: 80%
+}
+
+sub,
+sup {
+    font-size: 75%;
+    line-height: 0;
+    position: relative;
+    vertical-align: baseline
+}
+
+sub {
+    bottom: -.25em
+}
+
+sup {
+    top: -.5em
+}
+
+img {
+    border-style: none
+}
+
+button,
+input,
+optgroup,
+select,
+textarea {
+    font-family: inherit;
+    font-size: 100%;
+    line-height: 1.15;
+    margin: 0
+}
+
+button,
+input {
+    overflow: visible
+}
+
+button,
+select {
+    text-transform: none
+}
+
+button,
+[type=button],
+[type=reset],
+[type=submit] {
+    -webkit-appearance: button
+}
+
+button::-moz-focus-inner,
+[type=button]::-moz-focus-inner,
+[type=reset]::-moz-focus-inner,
+[type=submit]::-moz-focus-inner {
+    border-style: none;
+    padding: 0
+}
+
+button:-moz-focusring,
+[type=button]:-moz-focusring,
+[type=reset]:-moz-focusring,
+[type=submit]:-moz-focusring {
+    outline: 1px dotted ButtonText
+}
+
+fieldset {
+    padding: .35em .75em .625em
+}
+
+legend {
+    box-sizing: border-box;
+    color: inherit;
+    display: table;
+    max-width: 100%;
+    padding: 0;
+    white-space: normal
+}
+
+progress {
+    vertical-align: baseline
+}
+
+textarea {
+    overflow: auto
+}
+
+[type=checkbox],
+[type=radio] {
+    box-sizing: border-box;
+    padding: 0
+}
+
+[type=number]::-webkit-inner-spin-button,
+[type=number]::-webkit-outer-spin-button {
+    height: auto
+}
+
+[type=search] {
+    -webkit-appearance: textfield;
+    outline-offset: -2px
+}
+
+[type=search]::-webkit-search-decoration {
+    -webkit-appearance: none
+}
+
+::-webkit-file-upload-button {
+    -webkit-appearance: button;
+    font: inherit
+}
+
+details {
+    display: block
+}
+
+summary {
+    display: list-item
+}
+
+template {
+    display: none
+}
+
+[hidden] {
+    display: none
+}
+
+@font-face {
+    font-family: Montserrat Alternates Medium;
+    src: url(/static/font/MontserratAlternates-Medium-DTQLK8Sv.ttf) format("truetype");
+    src: url(/static/font/MontserratAlternates-Medium-HgbRkmOy.eot?#iefix) format("embedded-opentype"), url(/static/font/MontserratAlternates-Medium-CElpJZZT.woff) format("woff"), url(/static/font/MontserratAlternates-Medium-C65VxdWk.woff2) format("woff2");
+    font-weight: 400;
+    font-style: normal
+}
+
+@font-face {
+    font-family: Montserrat Medium;
+    src: url(/static/font/Montserrat-Medium-CXVAt7RH.eot);
+    src: url(/static/font/Montserrat-Medium-CXVAt7RH.eot?#iefix) format("embedded-opentype"), url(/static/font/Montserrat-Medium-CC-4-OMP.woff) format("woff"), url(/static/font/Montserrat-Medium-Csik_ItA.ttf) format("truetype");
+    font-weight: 400;
+    font-style: normal
+}
+
+@font-face {
+    font-family: Montserrat Light;
+    src: url(/static/font/Montserrat-Light-B_D-MHBd.eot);
+    src: url(/static/font/Montserrat-Light-B_D-MHBd.eot?#iefix) format("embedded-opentype"), url(/static/font/Montserrat-Light-D80tw1G8.woff) format("woff"), url(/static/font/Montserrat-Light-CPpSzFas.ttf) format("truetype");
+    font-weight: 400;
+    font-style: normal
+}
+
+*,
+*:after,
+*:before {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    scroll-behavior: smooth
+}
+
+body {
+    font-style: normal;
+    overflow-x: hidden
+}
+
+img {
+    max-width: 100%
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.header {
+    position: relative;
+}
+
+.header__navbar {
+    position: relative;
+    position: fixed;
+    width: 100%;
+    z-index: 991;
+    left: 0;
+    right: 0;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    background: rgba(27, 140, 67, 0.32);
+}
+
+.header__navbar-hamburger {
+    display: none;
+}
+
+.header__navbar-logo-text {
+    font-family: "Montserrat Alternates Medium", sans-serif;
+    font-weight: 600;
+    font-size: 40px;
+    color: rgba(13, 76, 35, 1);
+}
+
+.header__navbar-buttons {
+    display: flex;
+    align-items: center;
+}
+
+.header__navbar-buttons button {
+    font-family: "Montserrat Medium", sans-serif;
+    font-weight: 500;
+    font-size: 18px;
+    border-style: none;
+    border-radius: 50px;
+    background-color: rgba(27, 140, 67, 1);
+    color: #ffffff;
+    text-decoration: none;
+    margin-right: 22px;
+    padding: 12px 20px;
+}
+
+.header__navbar-buttons button:first-child {
+    padding: 12px 40px;
+}
+
+.header__navbar-buttons button:last-child {
+    margin-right: 0;
+}
+
+.header__navbar-buttons *:hover {
+    cursor: pointer;
+    background-color: rgba(27, 140, 67, 0.8);
+}
+
+.header__navbar-menu {
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+}
+
+.header__navbar-menu-account,
+.header__navbar-menu-search,
+.header__navbar-menu-hamburger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    border-style: none;
+    background-color: rgba(27, 140, 67, 1);
+    margin-right: 10px;
+}
+
+.header__navbar-menu-account:hover,
+.header__navbar-menu-search:hover,
+.header__navbar-menu-hamburger:hover {
+    cursor: pointer;
+    background-color: rgba(27, 140, 67, 0.8);
+}
+
+.header__navbar-menu-hamburger {
+    flex-direction: column;
+    align-items: center;
+}
+
+.header__navbar-menu-hamburger span {
+    display: block;
+    width: 22px;
+    margin-bottom: 4px;
+    height: 2.5px;
+    background-color: #ffffff;
+    text-align: center;
+}
+
+.header__navbar-menu-hamburger span:last-child {
+    margin-left: 5px;
+    width: 16px;
+    margin-bottom: 0;
+}
+
+.hamburger-menu {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: fixed;
+    background: #fff;
+    width: 100%;
+    height: 50vh;
+    z-index: 991;
+    top: 121px;
+    left: -100%;
+    padding: 25px 0 50px 0;
+    list-style-type: none;
+    transition: 0.6s all;
+}
+
+.hamburger-menu hr {
+    width: 100%;
+    rgba(217, 217, 217, 1)
+}
+
+.hamburger-menu__link {
+    font-family: "Montserrat Medium", sans-serif;
+    font-weight: 600;
+    line-height: 24px;
+    color: rgba(13, 76, 35, 1);
+    text-decoration: none;
+    font-size: 20px;
+    margin-left: 53px;
+}
+
+
+@media (min-width: 1199px) and (max-width: 1399px) {
+    .header__navbar-buttons {
+        margin-right: 0;
+    }
+
+    .header__navbar-buttons button {
+        font-size: 16px;
+    }
+
+    .header__navbar-buttons .dictionary,
+    .header__navbar-buttons .stylicstic-helper,
+    .header__navbar-buttons .dictionary-body {
+        margin-right: 12px;
+    }
+
+    .header__navbar-buttons button {
+        padding: 12px 10px;
+    }
+
+    .header__navbar-buttons button:first-child {
+        padding: 12px 20px;
+    }
+}
+
+@media (min-width: 992px) and (max-width: 1199px) {
+    .header__navbar {
+        padding: 20px 10px;
+        justify-content: space-around;
+    }
+
+    .header__navbar-logo-text {
+        font-size: 35px;
+    }
+
+    .header__navbar-buttons {
+        margin-right: 0;
+    }
+
+    .header__navbar-buttons button {
+        font-size: 14px;
+    }
+
+    .header__navbar-buttons button {
+        padding: 12px 6px;
+    }
+
+    .header__navbar-buttons button:first-child {
+        padding: 12px 6px;
+    }
+
+    .header__navbar-buttons .dictionary,
+    .header__navbar-buttons .stylicstic-helper,
+    .header__navbar-buttons .dictionary-body {
+        margin-right: 5px;
+    }
+}
+
+
+@media (min-width: 768.5px) and (max-width: 992px) {
+    .header__navbar {
+        padding: 20px 10px;
+        justify-content: space-around;
+    }
+
+    .header__navbar-logo-text {
+        font-size: 1.4rem;
+    }
+
+    .header__navbar-buttons {
+        margin-right: 0;
+    }
+
+    .header__navbar-buttons button {
+        font-size: 11px;
+    }
+
+    .header__navbar-buttons button {
+        padding: 10px 4px;
+    }
+
+    .header__navbar-buttons button:first-child {
+        padding: 10px 4px;
+    }
+
+    .header__navbar-buttons .dictionary,
+    .header__navbar-buttons .stylicstic-helper,
+    .header__navbar-buttons .dictionary-body {
+        margin-right: 5px;
+    }
+
+    .header__navbar-menu-account,
+    .header__navbar-menu-search,
+    .header__navbar-menu-hamburger {
+        width: 45px;
+        height: 45px;
+        margin-right: 5px;
+    }
+}
+
+@media (max-width: 768px) {
+    .header__navbar-hamburger {
+        display: block;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 34px;
+        height: 22px;
+    }
+
+    .header__navbar-logo {
+        margin-left: 3rem;
+    }
+
+    .header__navbar-hamburger span {
+        display: block;
+        height: 4px;
+        width: 100%;
+        background-color: #fff;
+        margin-bottom: 5px;
+        transition: 0.5s all;
+    }
+
+    .header__navbar-hamburger.is-active span {
+        margin-bottom: -4px;
+    }
+
+    .header__navbar-hamburger.is-active span:nth-child(1) {
+        transform: translateY(8px) rotate(-45deg);
+    }
+
+    .header__navbar-hamburger.is-active span:nth-child(2) {
+        display: none;
+    }
+
+    .header__navbar-hamburger.is-active span:nth-child(3) {
+        transform: translateY(8px) rotate(45deg);
+    }
+
+    .header__navbar-buttons {
+        display: none;
+    }
+
+    .hamburger-menu.is-active {
+        left: 0;
+    }
+}
+
+@media (max-width: 520px) {
+    .header__navbar-logo-text {
+        font-size: 1.5rem;
+    }
+
+    .hamburger-menu {
+        top: 91px;
+    }
+}
+
+@media (max-width: 450px) {
+    .header__navbar-logo-text {
+        font-size: 1.2rem;
+    }
+
+    .hamburger-menu__link {
+        font-size: 1rem;
+    }
+}
+
+.main {
+    min-height: calc(100% - 102px);
+    padding: 120px 0 0 0;
+/*    margin-top: 118px;*/
+}

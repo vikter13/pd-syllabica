@@ -1,0 +1,305 @@
+{% extends 'mikl/base.html' %}
+
+{% block content %}
+<style>
+	.main {
+		padding: 110px 0 92px 0;
+		margin-top: 118px;
+		background-image: url({{ url_for('static', filename="images/main-background.png")}});
+/*		background-size: 40%;*/
+		background-repeat: no-repeat;
+		background-position: top 2rem right 2rem;
+	}
+
+	.container {
+		max-width: 1360px;
+		margin: 0 auto;
+	}
+
+	.main__wrapper {
+		display: flex;
+	}
+
+	.main__about {
+		max-width: 60%;
+	}
+
+	.main__title {
+		font-family: "Montserrat Medium", sans-serif;
+		font-weight: 600;
+		font-size: 32px;
+		line-height: 40px;
+		color: rgba(17, 66, 170, 1);
+		text-transform: uppercase;
+		margin-bottom: 40px;
+	}
+
+	.main__text {
+		font-family: "Montserrat Light", sans-serif;
+		font-weight: 300;
+		font-size: 20px;
+		line-height: 20px;
+	}
+
+	.main__text-link {
+		color: rgba(17, 66, 170, 1);
+	}
+
+	.main-content__versions {
+/*		text-align: center;*/
+		margin-top: 30px;
+		margin-bottom: 60px;
+		max-width: 100%;
+	}
+
+
+	.main-content__versions button {
+		color: rgba(108, 141, 213, 1);
+		font-family: "Montserrat Medium", sans-serif;
+		font-weight: 600;
+		font-size: 24px;
+		line-height: 20px;
+		background-color: #ffffff;
+		border: 3px solid rgba(108, 141, 213, 1);
+		padding: 15px 180px;
+	}
+
+	.main-content__versions button:hover {
+		cursor: pointer;
+	}
+
+	.main-content__button_russian {
+		border-radius: 50px 0 0 50px;
+	}
+
+	.main-content__button_latin {
+		border-radius: 0 50px 50px 0;
+	}
+
+	.main-content__button_latin.active, .main-content__button_russian.active{
+		background-color: rgba(108, 141, 213, 1);
+		color: #ffffff;
+	}
+
+	.main-content__label {
+		display: block;
+		margin-bottom: 34px;
+		font-family: "Montserrat Light", sans-serif;
+		font-weight: 300;
+		font-size: 24px;
+		line-height: 20px;
+	}
+
+	.main-content__input_range {
+		display: block;
+		margin: 0 auto;
+		width: 100%;
+		margin-bottom: 50px;
+	}
+
+	.main-content__input {
+		min-height: 300px;
+		height: auto;
+		background: rgba(226, 228, 249, 1);
+		border: 1px solid rgba(108, 141, 213, 1);
+		width: 98%;
+		padding: 1%;
+		resize: none;
+	}
+
+	.main-content__button {
+		display: block;
+		margin: 0 auto;
+		margin-top: 52px;
+		background: rgba(108, 141, 213, 1);
+		border-radius: 50px;
+		border-style: none;
+		font-family: "Montserrat Medium", sans-serif;
+		font-weight: 600;
+		font-size: 32px;
+		line-height: 14px;
+		color: #ffffff;
+		padding: 25px 54px;
+	}
+
+	.main-content__button:hover {
+		cursor: pointer;
+		background: rgba(108, 141, 213, 0.8);
+	}
+
+	@media (min-width: 1199px) and (max-width: 1399px) {
+		.main {
+			background-position: top 4rem right 2rem;
+		}
+
+		.container {
+			max-width: 1170px;
+		}
+	}
+
+	@media (min-width: 992px) and (max-width: 1199px) {
+		.main {
+			background-position: top 4rem right 2rem;
+		}
+
+		.main-content__versions button {
+			padding: 15px 120px;
+		}
+
+		.container {
+			max-width: 960px;
+		}
+	}
+
+	@media (min-width: 768px) and (max-width: 992px) {
+		.main {
+			background-position: top 6rem right 2rem;
+		}
+
+		.main-content__versions button {
+			padding: 15px 60px;
+		}
+
+		.container {
+			max-width: 720px;
+		}
+
+		.main__title {
+			font-size: 32px;
+		}
+
+		.main__logo {
+			font-size: 64px;
+		}
+	}
+
+	@media (max-width: 768px) {
+		.main {
+			background: none;
+		}
+
+		.main-content__versions button {
+			padding: 15px 20px;
+		}
+
+		.main__about {
+			max-width: 100%;
+		}
+
+		.container {
+			max-width: 540px;
+		}
+
+		.main__title {
+			font-size: 24px;
+		}
+
+		.main__text {
+			font-size: 20px;
+		}
+
+		.main__logo {
+			font-size: 48px;
+		}
+	}
+
+	@media (max-width: 575px) {
+		.container {
+			max-width: 450px;
+		}
+
+		.main-content__versions button {
+			font-size: 18px;
+			padding: 15px 20px;
+		}
+
+		.main__title {
+			font-size: 20px;
+		}
+
+		.main__text {
+			font-size: 18px;
+		}
+
+		.main__logo {
+			font-size: 36px;
+		}
+	}
+
+	@media (max-width: 450px) {
+		.container {
+			max-width: 320px;
+			width: 90%;
+		}
+
+		.main-content__versions button {
+			font-size: 14px;
+			padding: 15px 10px;
+		}
+
+		.main__title {
+			font-size: 18px;
+			max-width: 100%;
+		}
+
+		.main__text {
+			font-size: 16px;
+			max-width: 100%;
+		}
+
+		.main__logo {
+			font-size: 24px;
+		}
+
+		.main-content__button {
+			font-size: 18px;
+		}
+	}
+
+	@media (max-width: 340px) {
+		.main-content__versions button {
+			font-size: 12px;
+			padding: 15px 5px;
+		}
+	}
+</style>
+<div class="container">
+	<div class="main__wrapper">
+		<div class="main__about">
+			<h1 class="main__title">Увидеть звуковую ткань...</h1>
+			<p class="main__text">
+				Phonotext дает возможность представления целостной картины звуковой организации текста путем ее
+				автоматического анализа,
+				с возможностью дальнейшего соотнесения выделенных повтором сегментов текста с его ритмической и
+				морфосинтаксической структурой.
+				<br><br><br>
+				Аллитерации и ассонансы... Рифмы.
+				Звуковые метафоры, парономазии, анаграммы... Повторы и переклички...
+				Что это: отдельные украшения, вышивка поверх уже готовой материи стиха — или сама основа поэтической
+				формы и генератор смысла?
+				Как измерить звуковую гармонию текста? О чем говорят данные сервиса Phonotext —детектора звуковых
+				повторов. <!-- <a class="main__text-link" target="_blank"
+					href="http://phonotext.syllabica.com"><i>Далее...</i></a> -->
+			</p>
+		</div>
+	</div>
+	<div class="main-content__versions">
+		<button onclick='ch_rus()' class="main-content__button_russian active">Русская версия</button>
+		<button	onclick='ch_lat()' class="main-content__button_latin">Латинская версия</button>
+	</div>
+	<div class="main-content">
+		<label for="main-content" class="main-content__label">Фильтр силы повтора (ИАС)</label>
+		<form action={{ url_for('mikl.edit') }}?lng=rus method="POST" style='width:100%'>
+			<div style="padding: 5px 20px 5px 5px;">
+				<div style="display:grid; width: 100%; grid-template-columns: 270px auto;">
+					<div style="min-width: 270px;">Фильтр комбинаций по ИАС-1:</div>
+					<input data-slider-id="sl1" name="filter" type="text" class="slider" value="" data-slider-min="0"
+						data-slider-max="1" data-slider-step="0.01" data-slider-value="[0,1]" />
+				</div>
+			</div>
+			<textarea name="text" type="text" id="mainContentInput" class="main-content__input"></textarea>
+			<button class="main-content__button" action="submit">Анализировать</button>
+		</form>
+	</div>
+</div>
+{% endblock %}

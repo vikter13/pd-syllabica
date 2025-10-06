@@ -1,0 +1,210 @@
+{% extends 'livedict/base.html' %}
+
+{% block name %}{% block title %}Главная{% endblock %}{% endblock %}
+
+{% block content %}
+<style>
+	.main {
+		padding: 48px 0 150px 0;
+		margin-top: 115px;
+		background-image: url({{ url_for('static', filename="images/title-background.svg")}}), url({{ url_for('static', filename="images/main-guide-background.png")}});
+		background-repeat: no-repeat, no-repeat;
+		background-size: 67%, 40%;
+		background-position: top 2rem left, bottom 10rem right 4rem;
+	}
+
+	.container {
+		max-width: 1360px;
+		margin: 0 auto;
+	}
+
+	.main__title {
+		font-family: "Montserrat Alternates Medium", sans-serif;
+		font-weight: 600;
+		font-size: 60px;
+		line-height: 80px;
+		max-width: 70%;
+		margin-bottom: 105px;
+		color: rgba(34, 94, 55, 1);
+		text-transform: uppercase;
+	}
+
+	.main__text {
+		margin: 0;
+		font-family: "Montserrat Light", sans-serif;
+		font-weight: 300;
+		font-size: 24px;
+		line-height: 30px;
+		max-width: 70%;
+	}
+
+	.main__text b {
+		font-family: "Montserrat", sans-serif;
+		font-weight: 600;
+	}
+
+	.main__button {
+		padding: 20px;
+		background-color: rgba(182, 218, 194, 1);
+		font-family: "Montserrat", sans-serif;
+		font-weight: 600;
+		font-size: 24px;
+		line-height: 30px;
+		border: none;
+		border-radius: 80px;
+		margin-top: 30px;
+	}
+
+	.main__button:hover {
+		cursor: pointer;
+		background-color: rgba(182, 218, 194, 0.8);
+	}
+
+	.main__logo-wrapper {
+		position: relative;
+		display: flex;
+		margin-top: 150px;
+	}
+
+	.main__logo {
+		font-family: "Montserrat Alternates Medium", sans-serif;
+		font-weight: 600;
+		font-size: 96px;
+		color: rgba(13, 76, 35, 1);
+		line-height: 125%;
+		max-width: 50%;
+	}
+
+	@media (min-width: 1199px) and (max-width: 1399px) {
+		.container {
+			max-width: 1170px;
+		}
+
+		.main__title {
+			font-size: 48px;
+		}
+
+	}
+
+	@media (min-width: 992px) and (max-width: 1199px) {
+		.container {
+			max-width: 960px;
+		}
+
+		.main__title {
+			font-size: 36px;
+		}
+
+		.main__logo {
+			font-size: 80px;
+		}
+	}
+
+	@media (min-width: 768px) and (max-width: 992px) {
+		.main {
+			background-size: 80%, 40%;
+		}
+
+		.container {
+			max-width: 720px;
+		}
+
+		.main__title {
+			font-size: 32px;
+		}
+
+		.main__logo {
+			font-size: 64px;
+		}
+	}
+
+	@media (max-width: 768px) {
+		.main {
+			background-size: 90%, 40%;
+		}
+
+		.container {
+			max-width: 540px;
+		}
+
+		.main__title {
+			font-size: 24px;
+			line-height: 60px;
+		}
+
+		.main__text {
+			font-size: 20px;
+		}
+
+		.main__logo {
+			font-size: 48px;
+		}
+	}
+
+	@media (max-width: 575px) {
+		.container {
+			max-width: 450px;
+		}
+
+		.main__title {
+			font-size: 20px;
+			line-height: 40px;
+		}
+
+		.main__text {
+			font-size: 18px;
+		}
+
+		.main__logo {
+			font-size: 36px;
+		}
+	}
+
+	@media (max-width: 450px) {
+		.main {
+			background-size: 100%, 40%;
+			background-position: top 3rem left, bottom 9.5rem right 1rem;
+		}
+
+		.container {
+			max-width: 320px;
+			width: 90%;
+		}
+
+		.main__title {
+			font-size: 18px;
+			max-width: 100%;
+		}
+
+		.main__text {
+			font-size: 16px;
+			max-width: 100%;
+		}
+
+		.main__logo {
+			font-size: 24px;
+		}
+
+		.main__button {
+			font-size: 18px;
+		}
+	}
+</style>
+<div class="container">
+	<h1 class="main__title">Живой стилистический словарь русского языка</h1>
+	<p class="main__text">
+		<b>«Живой стилистический словарь русского языка»</b> – справочный и корректировочный лингвистический сервис  для
+		работы с любыми текстовыми данными.
+		<br><br>
+		Электронный лингвистический справочник  – веб-сервис, который позволяет автоматически представлять
+		стилистический портрет русских слов и выражений, формировать стилистические пометы, многосторонне отражая
+		контекстуально-ролевые тяготения единиц, динамику социокультурного и эмоционально-оценочного употребления.
+	</p>
+	<div class="main__logo-wrapper">
+		<span class="main__logo">
+			Live Dictionary
+		</span>
+	</div>
+</div>
+
+{% endblock %}

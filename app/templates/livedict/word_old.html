@@ -1,0 +1,204 @@
+{% extends 'livedict/base.html' %}
+
+{% block content %}
+<style>
+    .main {
+        padding: 110px 0 560px 0;
+        margin-top: 118px;
+    }
+
+    .container {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .main__title {
+        font-family: "Montserrat Alternates Medium", sans-serif;
+        font-weight: 600;
+        font-size: 48px;
+        line-height: 44px;
+        text-align: center;
+        color: rgba(13, 76, 35, 1);
+        text-transform: uppercase;
+        margin-bottom: 60px;
+    }
+
+    .main-content__label {
+        display: block;
+        margin-bottom: 34px;
+        font-family: "Montserrat Medium", sans-serif;
+        font-weight: 600;
+        font-size: 32px;
+        line-height: 20px;
+        color: rgba(13, 76, 35, 1);
+        margin-left: 4%;
+    }
+
+    .main-content__input {
+        min-height: 2rem;
+        height: auto;
+        background: rgba(215, 236, 222, 1);
+        border: 3px solid rgba(27, 140, 67, 1);
+        border-radius: 60px;
+        width: 97%;
+        padding: 1% 2%;
+        resize: none;
+    }
+
+    .main-content__button {
+        display: block;
+        margin: 0 auto;
+        margin-top: 30px;
+        background: rgba(215, 236, 222, 1);
+        border-radius: 30px;
+        border-style: none;
+        font-family: "Montserrat Medium", sans-serif;
+        font-weight: 600;
+        font-size: 32px;
+        line-height: 20px;
+        color: rgba(13, 76, 35, 1);
+        padding: 20px 30px;
+    }
+
+    .main-content__button:hover {
+        cursor: pointer;
+        background: rgba(215, 236, 222, 0.8);
+    }
+
+    @media (min-width: 1199px) and (max-width: 1399px) {
+        .container {
+            max-width: 1170px;
+        }
+    }
+
+    @media (min-width: 992px) and (max-width: 1199px) {
+        .main {
+            padding: 110px 0 280px 0;
+        }
+
+        .container {
+            max-width: 960px;
+        }
+    }
+
+    @media (min-width: 768px) and (max-width: 992px) {
+        .container {
+            max-width: 720px;
+        }
+
+        .main-content {
+            margin-top: 0;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .main {
+            padding: 110px 0 280px 0;
+        }
+
+        .main-content__label {
+            font-size: 24px;
+
+        }
+
+        .container {
+            max-width: 540px;
+        }
+
+        .main__title {
+            font-size: 48px;
+        }
+
+        .main-content__title {
+            font-size: 36px;
+        }
+
+        .main-content__text {
+            font-size: 24px;
+        }
+
+        .main-content__button {
+            font-size: 36px;
+            padding: 20px 30px;
+        }
+    }
+
+    @media (max-width: 575px) {
+        .container {
+            max-width: 450px;
+            width: 90%
+        }
+
+        .main__title {
+            font-size: 36px;
+        }
+
+        .main-content__title {
+            font-size: 24px;
+        }
+
+        .main-content__text {
+            font-size: 18px;
+        }
+
+        .main-content__button {
+            font-size: 24px;
+            padding: 20px 30px;
+        }
+    }
+
+    @media (max-width: 450px) {
+        .container {
+            max-width: 320px;
+        }
+
+        .main__title {
+            font-size: 24px;
+        }
+
+        .main-content__title {
+            font-size: 18px;
+        }
+
+        .main-content__text {
+            font-size: 14px;
+        }
+
+        .main-content__button {
+            font-size: 18px;
+            padding: 15px 20px;
+        }
+    }
+</style>
+<div class="container">
+    <h1 class="main__title">Стилистическая характеристика</h1>
+    <div class="main-content">
+        <form action="{{ url_for('livedict.predict_word_OLD') }}" method="post" name="vis" class="form"
+            style="padding: 0px 4vw;">
+            <label for="main-content" class="main-content__label">Введите слово</label>
+            <input type="text" name="word" id="mainContentInput" class="main-content__input"></textarea>
+            <button class="main-content__button" action="submit">Отобразить</button>
+        </form>
+    </div>
+
+{% if word %}
+    <h3> {{word}} </h3>
+    <div id="word-portrait"></div>
+    <div style="text-align: right; padding-right: calc(50vw - 6cm);">
+    {% if images %}
+        {% for image in images %}
+            <br/>
+	    {% autoescape false %}
+            {{ image }}
+	    {% endautoescape %}
+            <br/>
+        {% endfor %}
+    {% else %}
+        <h3> Cлово не найдено! Можете воспользоваться стилевым анализом альфа версии словаря</h3>
+    {% endif %}
+    </div>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/word-portrait.min.js') }}"></script>
+    <script>if (typeof WordPortrait !== undefined) { WordPortrait.render({ mountPoint: "#word-portrait", word:"{{word}}"});}</script>
+{% endif %}
+</div>
+{% endblock %}

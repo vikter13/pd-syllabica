@@ -1,0 +1,11 @@
+<style>
+{% include "footer.css"%}
+{% include g.url_prefix + "/footer.css" ignore missing %}
+</style>
+<div class="container"><div class="footer-logo">
+{% include g.url_prefix + "/footer_data.html" ignore missing %}
+<div class="footer-text">
+    <a href="https://mospolytech.ru/"><img src="{{ url_for('static', filename="images/polytech.svg")}}" alt="polytech logo" class="footer__polytech-logo"/></a>
+</div>
+</div>
+</div>
