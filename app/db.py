@@ -16,7 +16,7 @@ def get_db():
     again.
     """
     if 'db' not in g:
-        g.db = models
+        g.db = models.db
 
     return g.db
 

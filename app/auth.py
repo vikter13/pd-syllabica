@@ -97,7 +97,7 @@ def load_logged_in_user():
     if user_id is None:
         g.user = None
     else:
-        g.user = None
+        g.user = models.User.query.filter_by(vk_id=user_id).first()
 
 @bp.route('/login', methods=('GET', 'POST'))
 def login():
@@ -119,7 +119,7 @@ def callback():
         include_client_id=True
     )
 
-    resp = vk.get('https://api.vk.com/method/users.get?v=5.81&fields=first_name,last_name,avatar')
+    resp = vk.get('https://api.vk.com/method/users.get?v=5.81&fields=first_name,last_name,photo_50')
     print(f'''
 ----
 f{resp.json()}
@@ -132,19 +132,20 @@ f{resp.json()}
     full_name = f"{first_name} {last_name}"
 
     db = get_db()
-    user = models.User.query.filter_by(name=full_name).first()
+    user = models.User.query.filter_by(vk_id=data['id']).first()
 
     if not user:
         user = models.User(
-            name=full_name,
-            password=generate_password_hash('vk_auth'),
-            email=None,
+            vk_id=data['id'],
+            first_name = data['first_name'],
+            last_name = data['last_name'],
+            url = data['photo_50'],
             access_level=1
         )
         db.session.add(user)
         db.session.commit()
 
-    session['user_id'] = user.id
+    session['user_id'] = user.vk_id
 
     return redirect(url_for('show_index'))
 

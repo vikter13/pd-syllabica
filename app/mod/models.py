@@ -267,7 +267,7 @@ class Text(db.Model):
     __tablename__ = 'texts'
 
     id = db.Column(db.Integer, primary_key=True, server_default=db.FetchedValue())
-    user_id = db.Column(db.ForeignKey('users.id'))
+    user_id = db.Column(db.ForeignKey('users2.vk_id'))
     text_name = db.Column(db.String(1000))
     text = db.Column(db.Text, nullable=False)
     text_blob = db.Column(db.LargeBinary)
@@ -276,7 +276,7 @@ class Text(db.Model):
     is_checked = db.Column(db.Boolean)
 
     date = db.relationship('Date', primaryjoin='Text.date_id == Date.id', backref='texts')
-    user = db.relationship('User', primaryjoin='Text.user_id == User.id', backref='texts')
+    user = db.relationship('User', primaryjoin='Text.user_id == User.vk_id', backref='texts')
 
 
 ''' OLD 
