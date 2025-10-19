@@ -1,7 +1,0 @@
-flask_migrate
-aiohttp
-scikit-learn
-scipy
-matplotlib
-pandas
-tqdm
