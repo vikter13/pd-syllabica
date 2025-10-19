@@ -44,7 +44,9 @@ client_secret = 'gU6tT8w0jhZtUwTDDm5P'
 client_id = '51566900'
 client_secret = 'HBYzYx2THXdewV9Rdj9y'
 '''
-redirect_uri = 'https://dev.syllabica.com/auth/callback'
+
+# redirect_uri = 'https://dev.syllabica.com/auth/callback'
+redirect_uri = 'https://5.101.69.112/auth/callback'
 
 vk = OAuth2Session(client_id, redirect_uri=redirect_uri)
 # vk.params['v'] = '5.81'

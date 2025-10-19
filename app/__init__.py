@@ -44,7 +44,7 @@ def create_app(test_config=None):
     app.register_blueprint(quiz.BP)
     app.register_blueprint(phonotext.BP)
 
-    quiz.init_app(app)
+#     quiz.init_app(app)
     phonotext.init_app(app)
 
     from app import livedict
