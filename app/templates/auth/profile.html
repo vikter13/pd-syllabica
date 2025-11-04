@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+.profile-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 150px;
+}
+
+.profile-avatar {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 30px;
+    border: 3px solid #ccc;
+}
+
+.profile-name {
+    font-size: 36px;
+    font-weight: bold;
+    font-family: 'Montserrat', sans-serif;
+    margin-bottom: 20px;
+    color: #000;
+}
+
+.profile-access {
+    font-size: 24px;
+    color: #000; 
+    margin-bottom: 40px;
+}
+
+.logout-button {
+    padding: 12px 30px;
+    font-size: 20px;
+    background-color: #f44336;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+.logout-button:hover {
+    background-color: #d32f2f;
+}
+</style>
+
+<div class="profile-container">
+    {% if g.user %}
+        <img src="{{ g.user['url'] }}" alt="Avatar" class="profile-avatar">
+        <div class="profile-name">{{ g.user['first_name'] }} {{ g.user['last_name'] }}</div>
+        <div class="profile-access">Access Level: {{ g.user['access_level'] }}</div>
+        <a href="{{ url_for('auth.logout') }}" class="logout-button">Logout</a>
+        {#{% if g.user.access_level == 100 %}
+        <a href="{{ url_for('auth.list') }}" class="logout-button">Список пользователей</a>
+        {% endif %}#}
+    {% else %}
+        <div style="font-size: 24px; color: #000;">Please log in to view your profile.</div>
+    {% endif %}
+</div>
+{% endblock %}

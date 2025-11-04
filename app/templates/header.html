@@ -18,7 +18,7 @@
 		<span></span>
 	</div>
 	<div class="header__navbar-logo">
-		<a href='/'>{% include g.url_prefix + "/logo.svg" ignore missing %}<span class="header__navbar-logo-text">{{ name() }}</span></a>
+		<a href='/'>{% include g.url_prefix + "/logo.svg" ignore missing %}<span class="header__navbar-logo-text">Syllabica</span>
 	</div>
 
 {% macro menu_href(url, text) -%}
@@ -29,8 +29,9 @@
 	</div>
 	<div class="header__navbar-menu">
 		{% if g.user %}
-		<button class="header__navbar-menu-account" onclick="location.href='{{ url_for("auth.logout") }}'">
-			<img src="{{ g.user['url'] }}" >
+		<button class="header__navbar-menu-account" onclick="location.href='{{ url_for("auth.profile") }}'">
+			<img src="{{ g.user['url'] }}" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+
 		{% else %}
 		<button class="header__navbar-menu-account" onclick="location.href='{{ url_for("auth.login") }}'">
 			<svg width="30" height="32" viewBox="0 0 30 32" fill="none" xmlns="http://www.w3.org/2000/svg">

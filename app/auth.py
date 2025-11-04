@@ -45,8 +45,8 @@ client_id = '51566900'
 client_secret = 'HBYzYx2THXdewV9Rdj9y'
 '''
 
-# redirect_uri = 'https://dev.syllabica.com/auth/callback'
-redirect_uri = 'https://5.101.69.112/auth/callback'
+redirect_uri = 'https://dev.syllabica.com/auth/callback'
+#redirect_uri = 'https://5.101.69.112/auth/callback'
 
 vk = OAuth2Session(client_id, redirect_uri=redirect_uri)
 # vk.params['v'] = '5.81'
@@ -85,9 +85,18 @@ def login_required(view):
     def wrapped_view(**kwargs):
         if g.user is None:
             return redirect(url_for('auth.login'))
-        if not g.user.is_activated:
-            return redirect(url_for('auth.checkemail'))
         return view(**kwargs)
+
+    return wrapped_view
+
+
+def admin_required(view):
+    def wrapped_view(*args, **kwargs):
+        if g.user is None:
+            return redirect(url_for('auth.login'))
+        if g.user.access_level != 100:
+            return redirect(url_for('auth.login'))
+        return view(*args, **kwargs)
 
     return wrapped_view
 
@@ -104,12 +113,13 @@ def load_logged_in_user():
 @bp.route('/login', methods=('GET', 'POST'))
 def login():
     session['code_verifier'], session['code_challenge'] = generate_pkce_pair()
+    print(session)
     authorization_url = vk.authorization_url(authorization_base_url, code_challenge=session['code_challenge'], code_challenge_method='S256')
     return redirect(authorization_url[0])
 
 @bp.route('/callback')
 def callback():
-    print(request.args)
+    print(f'{request.args=} :: {session}')
     t = vk.fetch_token(
         token_url,
         # grant_type = 'authorization_code',
@@ -144,8 +154,8 @@ f{resp.json()}
             url = data['photo_50'],
             access_level=1
         )
-        db.session.add(user)
-        db.session.commit()
+        db.sa_db.session.add(user)
+        db.sa_db.session.commit()
 
     session['user_id'] = user.vk_id
 
@@ -180,7 +190,7 @@ def get_accesslvl():
     res = 0 if g.user is None else g.user.config['accesslvl']
 
     return Response(str(res), mimetype='text/txt')
-
+'''
 @bp.route('/edit', methods = ('POST', 'GET'))
 @bp.route('/edit/<int:user_id>', methods = ('POST', 'GET'))
 def edit(user_id = None):
@@ -220,10 +230,10 @@ def edit(user_id = None):
             'SELECT * FROM user WHERE id = ?', (user_id,)
     ).fetchone()
     return render_template('auth/edit.html', user = user)
-
-
+'''
 @bp.route('/list', methods = ('POST', 'GET'))
-def list(user_id = None):
+@admin_required
+def user_list(user_id = None):
     # if not g.user :
     #    return render_template('auth/edit.html', user=None)
 
@@ -233,13 +243,13 @@ def list(user_id = None):
     db = get_db()
     users = []
     for user in models.User.query.all():
-        print(user, dir(user), user.id, user.name, user.password)
+        users.append(user)
 
-    return 'STOP'
+    # return ''.join(users)
 
-    users = db.execute(
-            'SELECT id, username, email, status, accesslvl FROM user'
-    ).fetchall()
+    # users = db.execute(
+    #         'SELECT id, username, email, status, accesslvl FROM user'
+    # ).fetchall()
     return render_template('auth/list.html', users = users)
 
 
@@ -268,3 +278,8 @@ def checkemail():
         flash(error)
     return render_template('auth/login.html')
 
+@bp.route('/profile')
+def profile():
+    if not g.user:
+        return redirect(url_for('auth.login'))
+    return render_template('auth/profile.html')

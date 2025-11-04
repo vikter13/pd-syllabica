@@ -15,7 +15,7 @@
     </span></div>
   {%- for a in users -%}
     <div class="div-row-table"><span>
-     {{ a["username"] }} </span><span> {{ a["email"] }} </span><span> {{ a["status"] }} </span><span> {{ a["accesslvl"] }} </span><span> <a href="{{ url_for("auth.edit") }}/{{ a["id"] }}">Edit</a>
+     {{ a.vk_id }} </span><span> {{ a.first_name }} </span><span> {{ a.last_name }} </span><span> {{ a.access_level }} </span><span> <a href="{{ url_for("auth.edit") }}/{{ a["id"] }}">Edit</a>
     </span></div>
   {%- endfor -%}
   </div>

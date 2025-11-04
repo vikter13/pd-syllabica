@@ -2,7 +2,7 @@
 Initialization flask application
 """
 import os
-from flask import Flask, render_template, g
+from flask import Flask, render_template, g, session
 from flask_cors import CORS
 
 def create_app(test_config=None):
@@ -57,6 +57,7 @@ def create_app(test_config=None):
         index page render
         """
         g.url_prefix = '.'
+        session['tmp'] = 0
         return render_template('index.html')
 
     return app
