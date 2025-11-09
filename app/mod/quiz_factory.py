@@ -1,4 +1,6 @@
 import yaml, sqlite3, os
+from sqlalchemy import create_engine, MetaData, Table, select, insert, text
+from sqlalchemy.orm import Session
 
 
 class Quiz():
@@ -8,6 +10,8 @@ class Quiz():
         self._name = ''
         self.builder = QuizHTMLForm
         self.db = None
+        self._engine = None
+        self._metadata = None
 
     def setup(self, path=None, name=None):
         if path is not None:
@@ -16,13 +20,28 @@ class Quiz():
             self._name = name
 
     def get_db(self):
-        return sqlite3.connect(os.path.join(self._path, 'db.sqlite'), detect_types=sqlite3.PARSE_DECLTYPES)
+        if self._engine is None:
+            db_path = os.path.join(self._path, 'db.sqlite')
+            self._engine = create_engine(f'sqlite:///{db_path}', echo=False)
+            self._metadata = MetaData()
+        return self._engine.connect()
+        # return sqlite3.connect(os.path.join(self._path, 'db.sqlite'), detect_types=sqlite3.PARSE_DECLTYPES)
+    
+    def get_engine(self):
+        if self._engine is None:
+            db_path = os.path.join(self._path, 'db.sqlite')
+            self._engine = create_engine(f'sqlite:///{db_path}', echo=False)
+            self._metadata = MetaData()
+        return self._engine
 
     def load(self):
         file = open(os.path.join(self._path, 'info'), "r")
         self._name = file.read()
         file.close()
-        db = self.get_db()
+        conn = self.get_db()
+        engine = self.get_engine()
+        metadata = MetaData()
+        # db = self.get_db()
         classes = {
             'Str': self.builder.Str,
             'Text': self.builder.Text,
@@ -31,17 +50,37 @@ class Quiz():
             'Range': self.builder.Range
         }
         # print(' >>> SELECT * FROM structure')
-        for row in db.execute('SELECT * FROM structure'):
-            tmp = classes[row[3]](row[5], row[4])
-            tmp.title = row[1]
-            tmp.name = row[2]
+        # for row in db.execute('SELECT * FROM structure'):
+        structure_table = Table('structure', metadata, autoload_with=engine)
+        result = conn.execute(select(structure_table))
+        for row in result:
+            row_tuple = tuple(row)
+            class_name = row_tuple[3]
+            txt_value = row_tuple[5]
+            type_value = row_tuple[4]
+            title_value = row_tuple[1]
+            name_value = row_tuple[2]
+            # tmp = classes[row[3]](row[5], row[4])
+            tmp = classes[class_name](txt_value, type_value)
+            tmp.title = title_value
+            # tmp.title = row[1]
+            tmp.name = name_value
+            # tmp.name = row[2]
             self.form.append(tmp)
         for field in self.form:
             if field.__class__.__name__ in ['Choise', 'Select']:
                 # print(' >>> Select * from ' + field.name)
-                for val in db.execute('Select * from ' + field.name):
-                    field.values[val[0]] = val[1]
-        db.close()
+                # for val in db.execute('Select * from ' + field.name):
+                field_table = Table(field.name, metadata, autoload_with=engine)
+                field_result = conn.execute(select(field_table))
+                for val in field_result:
+                    val_tuple = tuple(val)
+                    n_value = val_tuple[0]
+                    value_text = val_tuple[1]
+                    # field.values[val[0]] = val[1]
+                    field.values[n_value] = value_text
+        conn.close()
+        # db.close()
         self.build_html()
 
     def get_path(self):
