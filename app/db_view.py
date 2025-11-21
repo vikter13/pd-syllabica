@@ -1,14 +1,10 @@
 # app/db_view.py
 # coding: utf-8
-"""
-Страница «Базы данных» на PostgreSQL.
-"""
 
-from flask import Blueprint, render_template, g
+import os
+from flask import Blueprint, render_template, g, request
 
 import app.mod.models as models
-
-__all__ = ["BP"]
 
 BP = Blueprint(
     "db_view",
@@ -19,35 +15,64 @@ BP = Blueprint(
 
 @BP.url_value_preprocessor
 def bp_url_value_preprocessor(endpoint, values):
-    # чтобы header.html подключил auth/header_links.html
     g.url_prefix = "auth"
 
 
 @BP.route("/list", methods=["GET"], endpoint="list")
 def list_page():
-    """
-    Простая страница, которая показывает немного содержимого
-    из нескольких таблиц PostgreSQL.
-    """
-    # users2: там ключ vk_id, а не id
-    users = models.User.query.order_by(models.User.vk_id).limit(50).all()
+    q = request.args.get("q", "").strip()
+    page = request.args.get("page", 1, type=int)
+    per_page = 20
 
-    texts = models.Text.query.order_by(models.Text.id).limit(50).all()
-    authors = models.Author.query.order_by(models.Author.id).limit(50).all()
-    dictionary = models.Dictionary.query.order_by(models.Dictionary.word).limit(50).all()
+    base_query = models.Text.query
 
-    stats = {
-        "users": models.User.query.count(),
-        "texts": models.Text.query.count(),
-        "authors": models.Author.query.count(),
-        "dictionary": models.Dictionary.query.count(),
-    }
+    if q:
+        like = f"%{q}%"
+        filters = []
+        if hasattr(models.Text, "title"):
+            filters.append(models.Text.title.ilike(like))
+        if hasattr(models.Text, "text"):
+            filters.append(models.Text.text.ilike(like))
+        if hasattr(models.Text, "author"):
+            filters.append(models.Text.author.ilike(like))
+        if filters:
+            from sqlalchemy import or_
+            base_query = base_query.filter(or_(*filters))
+
+    total = base_query.count()
+    page_count = (total + per_page - 1) // per_page or 1
+    if page < 1:
+        page = 1
+    if page > page_count:
+        page = page_count
+
+    offset = (page - 1) * per_page
+    rows_orm = base_query.order_by(models.Text.id).offset(offset).limit(per_page).all()
+
+    columns = []
+    for name in ("id", "user_id", "date_id", "genre_id", "author_id", "author", "title", "text"):
+        if hasattr(models.Text, name):
+            columns.append(name)
+
+    rows = []
+    for t in rows_orm:
+        d = {}
+        for col in columns:
+            d[col] = getattr(t, col, None)
+        rows.append(d)
+
+    window = 5
+    start = max(1, page - window)
+    end = min(page_count, page + window)
+    page_numbers = list(range(start, end + 1))
 
     return render_template(
         "db/list.html",
-        stats=stats,
-        users=users,
-        texts=texts,
-        authors=authors,
-        dictionary=dictionary,
+        rows=rows,
+        columns=columns,
+        q=q,
+        total=total,
+        page=page,
+        page_count=page_count,
+        page_numbers=page_numbers,
     )
