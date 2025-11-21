@@ -56,9 +56,9 @@
         <div class="profile-name">{{ g.user['first_name'] }} {{ g.user['last_name'] }}</div>
         <div class="profile-access">Access Level: {{ g.user['access_level'] }}</div>
         <a href="{{ url_for('auth.logout') }}" class="logout-button">Logout</a>
-        {#{% if g.user.access_level == 100 %}
+        {% if g.user.access_level == 100 %}
         <a href="{{ url_for('auth.list') }}" class="logout-button">Список пользователей</a>
-        {% endif %}#}
+        {% endif %}
     {% else %}
         <div style="font-size: 24px; color: #000;">Please log in to view your profile.</div>
     {% endif %}

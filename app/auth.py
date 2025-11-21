@@ -231,6 +231,7 @@ def edit(user_id = None):
     ).fetchone()
     return render_template('auth/edit.html', user = user)
 '''
+'''
 @bp.route('/list', methods = ('POST', 'GET'))
 @admin_required
 def user_list(user_id = None):
@@ -251,6 +252,33 @@ def user_list(user_id = None):
     #         'SELECT id, username, email, status, accesslvl FROM user'
     # ).fetchall()
     return render_template('auth/list.html', users = users)
+'''
+@bp.route('/list', methods=['GET', 'POST'])
+def list():
+    if not g.user or g.user.access_level != 100:
+        return redirect(url_for('auth.profile'))
+
+    db = get_db()
+
+    if request.method == 'POST':
+        vk_id = request.form['vk_id']
+        first_name = request.form['first_name']
+        last_name = request.form['last_name']
+        access_level = request.form['access_level']
+
+        db.execute(
+            """
+            UPDATE users2
+            SET first_name = ?, last_name = ?, access_level = ?
+            WHERE vk_id = ?
+            """,
+            (first_name, last_name, access_level, vk_id)
+        )
+        db.commit()
+
+    users = db.execute("SELECT * FROM users2 ORDER BY vk_id ASC").fetchall()
+    return render_template('auth/list.html', users=users)
+
 
 
 @bp.route('/check', methods=('GET', 'POST'))

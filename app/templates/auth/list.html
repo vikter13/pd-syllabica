@@ -1,22 +1,92 @@
 {% extends 'auth/base.html' %}
 
 {% block link %}
-<link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
+<style>
+    .user-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        font-size: 18px;
+        color: #000;
+    }
+
+    .user-table th, .user-table td {
+        padding: 10px 15px;
+        border-bottom: 1px solid #ccc;
+        vertical-align: middle;
+    }
+
+    .user-table th {
+        background: #f0f0f0;
+        font-weight: bold;
+        text-align: left;
+    }
+
+    .user-input {
+        width: 150px;
+        padding: 6px;
+        font-size: 16px;
+        border: 1px solid #aaa;
+        border-radius: 4px;
+    }
+
+    .lvl-input {
+        width: 70px;
+        text-align: center;
+    }
+
+    .save-btn {
+        padding: 6px 12px;
+        border: none;
+        background: #4caf50;
+        color: #fff;
+        font-size: 16px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .save-btn:hover {
+        background: #45a147;
+    }
+</style>
 {% endblock %}
 
-{% block header %}
-  <h1>{% block title %}Список пользователей config.{% endblock %}</h1>
-{% endblock %}
+{% block content %}
+<h1>Список пользователей</h1>
 
-{% block content -%}
-  <div id="table">
-    <div class="div-row-table header"><span>
-     Name </span><span> E-mail </span><span> Status </span><span> Access Level </span><span> Link 
-    </span></div>
-  {%- for a in users -%}
-    <div class="div-row-table"><span>
-     {{ a.vk_id }} </span><span> {{ a.first_name }} </span><span> {{ a.last_name }} </span><span> {{ a.access_level }} </span><span> <a href="{{ url_for("auth.edit") }}/{{ a["id"] }}">Edit</a>
-    </span></div>
-  {%- endfor -%}
-  </div>
+<table class="user-table">
+    <tr>
+        <th>vk_id</th>
+        <th>Имя</th>
+        <th>Фамилия</th>
+        <th>Access Level</th>
+        <th>Сохранить</th>
+    </tr>
+
+    {% for u in users %}
+    <tr>
+        <form method="POST">
+            <td>{{ u.vk_id }}</td>
+
+            <td>
+                <input type="hidden" name="vk_id" value="{{ u.vk_id }}">
+                <input class="user-input" type="text" name="first_name" value="{{ u.first_name }}">
+            </td>
+
+            <td>
+                <input class="user-input" type="text" name="last_name" value="{{ u.last_name }}">
+            </td>
+
+            <td>
+                <input class="user-input lvl-input" type="number" name="access_level" value="{{ u.access_level }}">
+            </td>
+
+            <td>
+                <button class="save-btn" type="submit">OK</button>
+            </td>
+        </form>
+    </tr>
+    {% endfor %}
+</table>
+
 {% endblock %}
