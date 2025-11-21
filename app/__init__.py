@@ -38,14 +38,16 @@ def create_app(test_config=None):
 
     os.environ['BLUEPRINTS_TYPES'] = app.config.get('BLUEPRINTS_TYPES', "domains")
 
-    from app import auth, quiz, phonotext
+    from app import auth, quiz, phonotext, db_view
 
     app.register_blueprint(auth.bp)
-    app.register_blueprint(quiz.BP)
+#    app.register_blueprint(quiz.BP)
     app.register_blueprint(phonotext.BP)
 
 #     quiz.init_app(app)
     phonotext.init_app(app)
+
+    app.register_blueprint(db_view.BP)
 
     from app import livedict
     app.register_blueprint(livedict.BP)

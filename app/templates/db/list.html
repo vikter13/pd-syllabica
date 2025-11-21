@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}Базы данных{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Базы данных</h1>
+
+    <h2 class="mt-4">Краткая статистика</h2>
+    <ul>
+        <li>Пользователи: {{ stats.users }}</li>
+        <li>Тексты: {{ stats.texts }}</li>
+        <li>Авторы: {{ stats.authors }}</li>
+        <li>Словарь (dictionary): {{ stats.dictionary }}</li>
+    </ul>
+
+    <h2 class="mt-4">Первые пользователи</h2>
+    <table class="table table-sm table-striped">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Имя</th>
+            <th>Email</th>
+            <th>Возраст</th>
+            <th>Статус</th>
+            <th>Уровень доступа</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for u in users %}
+            <tr>
+                <td>{{ u.id }}</td>
+                <td>{{ u.name }}</td>
+                <td>{{ u.email }}</td>
+                <td>{{ u.age }}</td>
+                <td>{{ u.status }}</td>
+                <td>{{ u.access_level }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <h2 class="mt-4">Первые тексты</h2>
+    <table class="table table-sm table-striped">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Название</th>
+            <th>Ссылка на источник</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for t in texts %}
+            <tr>
+                <td>{{ t.id }}</td>
+                <td>{{ t.text_name }}</td>
+                <td>{{ t.source_link }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <h2 class="mt-4">Первые авторы</h2>
+    <table class="table table-sm table-striped">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Имя</th>
+            <th>Пол</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for a in authors %}
+            <tr>
+                <td>{{ a.id }}</td>
+                <td>{{ a.name }}</td>
+                <td>{% if a.author_gender %}{{ a.author_gender.name }}{% endif %}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <h2 class="mt-4">Первые слова словаря</h2>
+    <table class="table table-sm table-striped">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Слово</th>
+            <th>Ударение</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for w in dictionary %}
+            <tr>
+                <td>{{ w.id }}</td>
+                <td>{{ w.word }}</td>
+                <td>{{ w.accent }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
