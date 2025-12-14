@@ -1,0 +1,264 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid mt-3">
+    <h1 class="mb-3">Базы данных — таблица texts</h1>
+    
+    <form method="get" class="mb-3">
+        <div class="input-group" style="max-width: 600px;">
+            <input type="text" name="q" class="form-control" placeholder="Поиск по названию/тексту" value="{{ q }}">
+            <button class="btn btn-primary" type="submit">Поиск</button>
+        </div>
+    </form>
+    
+    <p class="mb-2">Найдено записей: <strong>{{ total }}</strong>. Страница <strong>{{ page }}</strong> из <strong>{{ page_count }}</strong>.</p>
+    
+    <div class="table-responsive" style="max-height: 70vh; overflow-y: auto; overflow-x: auto; border: 1px solid #dee2e6;">
+        <table class="table table-bordered table-sm mb-0 table-hover">
+            <thead class="table-light">
+                <tr>
+                    {% for col in columns %}
+                    <th scope="col">{{ col }}</th>
+                    {% endfor %}
+                    <th scope="col">Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in rows %}
+                <tr>
+                    {% for col in columns %}
+                    <td style="max-width: 600px;">
+                        {% set value = row[col] %}
+                        {% if col == 'text' and value and value|length > 100 %}
+                            {{ value[:100] }}...
+                        {% elif value is not none %}
+                            {{ value }}
+                        {% else %}
+                            —
+                        {% endif %}
+                    </td>
+                    {% endfor %}
+                    <td>
+                        <button class="btn btn-sm btn-info view-btn" data-text-id="{{ row.id }}">Просмотр</button>
+                        <button class="btn btn-sm btn-warning edit-btn" data-text-id="{{ row.id }}">Редактировать</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <nav aria-label="Page navigation" class="mt-3">
+        <div class="d-flex justify-content-center">
+            <ul class="pagination">
+                <li class="page-item {% if page == 1 %}disabled{% endif %}">
+                    <a class="page-link" href="{{ url_for('db_view.texts_list', q=q, page=1) }}">Первая</a>
+                </li>
+                <li class="page-item {% if page == 1 %}disabled{% endif %}">
+                    <a class="page-link" href="{{ url_for('db_view.texts_list', q=q, page=page-1 if page > 1 else 1) }}">Назад</a>
+                </li>
+                {% for p in page_numbers %}
+                <li class="page-item {% if p == page %}active{% endif %}">
+                    <a class="page-link" href="{{ url_for('db_view.texts_list', q=q, page=p) }}">{{ p }}</a>
+                </li>
+                {% endfor %}
+                <li class="page-item {% if page == page_count %}disabled{% endif %}">
+                    <a class="page-link" href="{{ url_for('db_view.texts_list', q=q, page=page+1 if page < page_count else page_count) }}">Вперёд</a>
+                </li>
+                <li class="page-item {% if page == page_count %}disabled{% endif %}">
+                    <a class="page-link" href="{{ url_for('db_view.texts_list', q=q, page=page_count) }}">Последняя</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</div>
+
+<!-- Модальное окно просмотра -->
+<div class="modal fade" id="viewModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Информация о произведении</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="viewContent">
+                <div class="spinner-border" role="status"><span class="visually-hidden">Загрузка...</span></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                <button type="button" class="btn btn-warning" id="editFromView">Редактировать</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно редактирования -->
+<div class="modal fade" id="editModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Редактирование произведения</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editForm">
+                    <div class="mb-3">
+                        <label class="form-label">Название</label>
+                        <input type="text" class="form-control" id="textName" name="text_name">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Текст</label>
+                        <textarea class="form-control" id="textContent" name="text" rows="5"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Ссылка на источник</label>
+                        <input type="url" class="form-control" id="sourceLink" name="source_link">
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="isChecked" name="is_checked">
+                        <label class="form-check-label">Проверено</label>
+                    </div>
+                    <hr><h6>Характеристики</h6>
+                    <div class="mb-3">
+                        <label class="form-label">Одобрение (0-1)</label>
+                        <input type="number" class="form-control" id="approval" step="0.1" min="0" max="1">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Важность (0-1)</label>
+                        <input type="number" class="form-control" id="importance" step="0.1" min="0" max="1">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Агрессивность (0-1)</label>
+                        <input type="number" class="form-control" id="aggressiveness" step="0.1" min="0" max="1">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Близость (0-1)</label>
+                        <input type="number" class="form-control" id="closeness" step="0.1" min="0" max="1">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                <button type="button" class="btn btn-primary" id="saveBtn">Сохранить</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentTextId = null;
+    const viewModal = new bootstrap.Modal(document.getElementById('viewModal'));
+    const editModal = new bootstrap.Modal(document.getElementById('editModal'));
+    
+    document.querySelectorAll('.view-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            currentTextId = this.dataset.textId;
+            loadTextData(currentTextId);
+            viewModal.show();
+        });
+    });
+    
+    document.querySelectorAll('.edit-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            currentTextId = this.dataset.textId;
+            loadTextData(currentTextId, true);
+            viewModal.hide();
+            editModal.show();
+        });
+    });
+    
+    document.getElementById('editFromView').addEventListener('click', function() {
+        viewModal.hide();
+        loadTextData(currentTextId, true);
+        editModal.show();
+    });
+    
+    function loadTextData(textId, isEdit = false) {
+        fetch(`/db/text/${textId}`)
+            .then(r => r.json())
+            .then(data => {
+                if (isEdit) { populateEditForm(data); }
+                else { populateViewContent(data); }
+            })
+            .catch(err => {
+                document.getElementById('viewContent').innerHTML = '<div class="alert alert-danger">Ошибка загрузки</div>';
+            });
+    }
+    
+    function populateViewContent(data) {
+        const html = `
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>ID:</strong> ${data.id}</p>
+                    <p><strong>Название:</strong> ${data.text_name || '—'}</p>
+                    <p><strong>Автор:</strong> ${data.user_name || '—'}</p>
+                    <p><strong>Дата:</strong> ${data.date || '—'}</p>
+                    <p><strong>Проверено:</strong> ${data.is_checked ? 'Да' : 'Нет'}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Жанры:</strong> ${data.genres.join(', ') || '—'}</p>
+                    <p><strong>Стили:</strong> ${data.styles.join(', ') || '—'}</p>
+                    <p><strong>Авторы:</strong> ${data.authors.join(', ') || '—'}</p>
+                    <p><strong>Источники:</strong> ${data.sources.join(', ') || '—'}</p>
+                </div>
+            </div>
+            <hr><h6>Текст</h6><p>${(data.text || '').substring(0, 300)}...</p>
+            <hr><h6>Характеристики</h6>
+            ${data.characteristics ? `
+                <p><strong>Одобрение:</strong> ${(data.characteristics.approval || 0).toFixed(2)}</p>
+                <p><strong>Важность:</strong> ${(data.characteristics.importance || 0).toFixed(2)}</p>
+                <p><strong>Агрессивность:</strong> ${(data.characteristics.aggressiveness || 0).toFixed(2)}</p>
+                <p><strong>Близость:</strong> ${(data.characteristics.closeness || 0).toFixed(2)}</p>
+            ` : '<p>—</p>'}
+        `;
+        document.getElementById('viewContent').innerHTML = html;
+    }
+    
+    function populateEditForm(data) {
+        document.getElementById('textName').value = data.text_name || '';
+        document.getElementById('textContent').value = data.text || '';
+        document.getElementById('sourceLink').value = data.source_link || '';
+        document.getElementById('isChecked').checked = data.is_checked || false;
+        if (data.characteristics) {
+            document.getElementById('approval').value = data.characteristics.approval || '';
+            document.getElementById('importance').value = data.characteristics.importance || '';
+            document.getElementById('aggressiveness').value = data.characteristics.aggressiveness || '';
+            document.getElementById('closeness').value = data.characteristics.closeness || '';
+        }
+    }
+    
+    document.getElementById('saveBtn').addEventListener('click', function() {
+        const data = {
+            text_name: document.getElementById('textName').value,
+            text: document.getElementById('textContent').value,
+            source_link: document.getElementById('sourceLink').value,
+            is_checked: document.getElementById('isChecked').checked,
+            characteristics: {
+                approval: parseFloat(document.getElementById('approval').value) || null,
+                importance: parseFloat(document.getElementById('importance').value) || null,
+                aggressiveness: parseFloat(document.getElementById('aggressiveness').value) || null,
+                closeness: parseFloat(document.getElementById('closeness').value) || null,
+            }
+        };
+        
+        fetch(`/db/text/${currentTextId}/update`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        })
+        .then(r => r.json())
+        .then(result => {
+            if (result.success) {
+                alert('Успешно сохранено');
+                editModal.hide();
+                location.reload();
+            } else {
+                alert('Ошибка: ' + result.error);
+            }
+        })
+        .catch(err => alert('Ошибка сохранения: ' + err));
+    });
+</script>
+{% endblock %}

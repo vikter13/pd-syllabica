@@ -1,0 +1,123 @@
+# app/db_view.py
+import os
+from flask import Blueprint, render_template, g, request, jsonify
+import app.mod.models as models
+from app.db import PDB
+
+BP = Blueprint('db_view', __name__, url_prefix='/db')
+
+@BP.url_value_preprocessor
+def bp_url_value_preprocessor(endpoint, values):
+    g.url_prefix = 'auth'
+
+@BP.route('/list', methods=['GET'])
+def list(page=None, q=None):
+    q = request.args.get('q', '').strip()
+    page = request.args.get('page', 1, type=int)
+    perpage = 20
+
+    base_query = models.Text.query
+    
+    if q:
+        like = f'%{q}%'
+        filters = []
+        if hasattr(models.Text, 'text_name'):
+            filters.append(models.Text.text_name.ilike(like))
+        if hasattr(models.Text, 'text'):
+            filters.append(models.Text.text.ilike(like))
+        if filters:
+            from sqlalchemy import or_
+            base_query = base_query.filter(or_(*filters))
+    
+    total = base_query.count()
+    page_count = (total + perpage - 1) // perpage or 1
+    
+    if page < 1:
+        page = 1
+    if page > page_count:
+        page = page_count
+    
+    offset = (page - 1) * perpage
+    rows_orm = base_query.order_by(models.Text.id).offset(offset).limit(perpage).all()
+    
+    columns = ['id', 'user_id', 'date_id', 'text_name', 'text']
+    rows = []
+    for t in rows_orm:
+        d = {col: getattr(t, col, None) for col in columns}
+        rows.append(d)
+    
+    window = 5
+    start = max(1, page - window)
+    end = min(page_count, page + window)
+    page_numbers = list(range(start, end + 1))
+    
+    return render_template('db_list.html', rows=rows, columns=columns, q=q, total=total, 
+                         page=page, page_count=page_count, page_numbers=page_numbers)
+
+@BP.route('/text/<int:text_id>', methods=['GET'])
+def get_text(text_id):
+    text = models.Text.query.get(text_id)
+    if not text:
+        return jsonify({'error': 'Text not found'}), 404
+    
+    authors = [aa.author.name for aa in (text.assign_authors or []) if aa.author]
+    genres = [g.genre_type.name for g in (text.genres or []) if g.genre_type]
+    styles = [s.styles_types.name for s in (text.styles or []) if s.styles_types]
+    sources = [src.source_type.name for src in (text.sources or []) if src.source_type]
+    characteristics = text.characteristics[0] if text.characteristics else None
+    
+    data = {
+        'id': text.id,
+        'text_name': text.text_name,
+        'text': text.text,
+        'user_name': f"{text.user.first_name} {text.user.last_name}" if text.user else None,
+        'date': text.date.name if text.date else None,
+        'authors': authors,
+        'genres': genres,
+        'styles': styles,
+        'sources': sources,
+        'source_link': text.source_link,
+        'is_checked': text.is_checked,
+        'characteristics': {
+            'approval': characteristics.approval,
+            'importance': characteristics.importance,
+            'aggressiveness': characteristics.aggressiveness,
+            'closeness': characteristics.closeness,
+        } if characteristics else None
+    }
+    return jsonify(data)
+
+@BP.route('/text/<int:text_id>/update', methods=['POST'])
+def update_text(text_id):
+    text = models.Text.query.get(text_id)
+    if not text:
+        return jsonify({'error': 'Text not found'}), 404
+    
+    data = request.json
+    
+    if 'text_name' in 
+        text.text_name = data['text_name']
+    if 'text' in 
+        text.text = data['text']
+    if 'source_link' in 
+        text.source_link = data['source_link']
+    if 'is_checked' in 
+        text.is_checked = data['is_checked']
+    
+    if 'characteristics' in 
+        char_data = data['characteristics']
+        char = text.characteristics[0] if text.characteristics else models.Characteristic(text_id=text_id)
+        char.approval = char_data.get('approval')
+        char.importance = char_data.get('importance')
+        char.aggressiveness = char_data.get('aggressiveness')
+        char.closeness = char_data.get('closeness')
+        if char not in PDB.session:
+            PDB.session.add(char)
+    
+    try:
+        PDB.session.commit()
+        return jsonify({'success': True})
+    except Exception as e:
+        PDB.session.rollback()
+        return jsonify({'error': str(e)}), 500
+
